@@ -254,3 +254,37 @@ if(this.last_tile != tile.id && tile.script) {
 }
   this.last_tile = tile.id;
 };
+Clarity.prototype.update_player = function () {
+  if (this.key.left) {
+    if (this.player.vel.x > -this.current_map.vel_limit.x)
+    this.player.vel.x -= this.current_map.movement_speed.left;
+  }
+  if (this.key.up) {
+    if (this.player.can_jump && this.player.vel.y > -this.current_map.vel_limit.y) {
+      this.player.vel.y -= this.current_map.movement_speed.jump;
+      this.player.can_jump = false;
+    }
+  }
+  if (this.key.right) {
+    if (this.player.vel.x < this.current_map.vel_limit.x)
+      this.player.vel.x += this.current_map.movement_speed.left;
+  }
+  this.move_player();
+};
+Clarity.prototype.draw_player = function (context) {
+  context.fillStyle = this.player.colour;
+  context.beginPath();
+  context.arc(
+    this.player.loc.x + this.tile_size / 2 - this.camera.x,
+    this.player.loc.y + this.tile_size / 2 - this.camera.y,
+    this.tile_size / 2 - 1, 0,  Math.PI * 2
+  );
+  context.fill();
+};
+Clarity.prototype.update = function () {
+  this.update_player();
+};
+Clarity.prototype.draw = function (context) {
+  this.draw_map(context, false);
+  this.draw_player(context);
+};
